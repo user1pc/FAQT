@@ -16,6 +16,7 @@ typedef struct
     int32_t width, height;
     TestSquareRightOfLine_NodeAction* actions;
     int32_t num_actions;
+    int original_width_log2;
 }TestSquareRightOfLineTraverser_FullCoverageInfo;
 
 void test_square_right_of_line_traversal_fill_square(uint8_t* pixels, int32_t width, int32_t height,
@@ -92,9 +93,10 @@ void test_square_right_of_line_traverser_fill_complete_correct(int32_t x1, int32
     }
 }
 
-bool test_square_right_of_line_traverser_fill_complete_callback(void *user_data, int32_t square_x, int32_t square_y, int32_t square_width, int32_t square_width_log2, bool complete_hit)
+bool test_square_right_of_line_traverser_fill_complete_callback(void *user_data, int32_t square_x, int32_t square_y, int32_t square_width, int32_t depth, bool complete_hit)
 {
     TestSquareRightOfLineTraverser_FullCoverageInfo* p_info = (TestSquareRightOfLineTraverser_FullCoverageInfo*)user_data;
+    int32_t square_width_log2 = p_info->original_width_log2 - (depth - 1);
     if (complete_hit)
     {
         test_square_right_of_line_traversal_fill_square(p_info->pixels, p_info->width, p_info->height, square_x, square_y, square_width, square_width_log2);
@@ -122,6 +124,7 @@ void test_square_right_of_line_traverser_fill_complete(int32_t x1, int32_t y1, i
     info.height = height;
     info.actions = nullptr;
     info.num_actions = 0;
+    info.original_width_log2 = square_width_log2 - 1;
     SquareRightOfLineTraversePreOrder(x1, y1, x2, y2, square_x, square_y, square_width_log2, test_square_right_of_line_traverser_fill_complete_callback, &info);
 
     for (int32_t y = 0; y < height; y++)
@@ -200,9 +203,10 @@ void test_square_right_of_line_traverser_fill_random_correct(int32_t x1, int32_t
     }
 }
 
-bool test_square_right_of_line_traverser_fill_random_callback(void* user_data, int32_t square_x, int32_t square_y, int32_t square_width, int32_t square_width_log2, bool complete_hit)
+bool test_square_right_of_line_traverser_fill_random_callback(void* user_data, int32_t square_x, int32_t square_y, int32_t square_width, int32_t depth, bool complete_hit)
 {
     TestSquareRightOfLineTraverser_FullCoverageInfo* p_info = (TestSquareRightOfLineTraverser_FullCoverageInfo*)user_data;
+    int32_t square_width_log2 = p_info->original_width_log2 - (depth - 1);
     // Search for an action
     for (int32_t i = 0; i < p_info->num_actions; i++)
     {
@@ -242,6 +246,7 @@ void test_square_right_of_line_traverser_fill_random(int32_t x1, int32_t y1, int
     info.height = height;
     info.actions = actions;
     info.num_actions = num_actions;
+    info.original_width_log2 = square_width_log2 - 1;
     SquareRightOfLineTraversePreOrder(x1, y1, x2, y2, square_x, square_y, square_width_log2, test_square_right_of_line_traverser_fill_random_callback, &info);
 
     bool all_success = true;

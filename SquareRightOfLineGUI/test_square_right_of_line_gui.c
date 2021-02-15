@@ -61,7 +61,7 @@ void fill_square_outline(uint32_t* pixels, int32_t width, int32_t height, int32_
 void test_square_right_of_line_gui_recursive(uint32_t* pixels, int32_t width, int32_t height,
     int32_t x1, int32_t y1, int32_t x2, int32_t y2,
     int32_t square_x, int32_t square_y, int32_t square_width,
-    SquareRightOfLineTester *p_tester)
+    SquareRightOfLineTester *p_tester, int depth)
 {
     int64_t half_width = square_width / 2;
     if (square_width == 1)
@@ -71,10 +71,10 @@ void test_square_right_of_line_gui_recursive(uint32_t* pixels, int32_t width, in
     }
 
     // Values being tested
-    SquareRightOfLineTesterResult top_left_hit_result_test = SquareRightOfLineTester_TestNextStep(p_tester, 0, 0);
-    SquareRightOfLineTesterResult top_right_hit_result_test = SquareRightOfLineTester_TestNextStep(p_tester, 1, 0);
-    SquareRightOfLineTesterResult bottom_left_hit_result_test = SquareRightOfLineTester_TestNextStep(p_tester, 0, 1);
-    SquareRightOfLineTesterResult bottom_right_hit_result_test = SquareRightOfLineTester_TestNextStep(p_tester, 1, 1);
+    SquareRightOfLineTesterResult top_left_hit_result_test = SquareRightOfLineTester_TestNextStep(p_tester, 0, 0, depth);
+    SquareRightOfLineTesterResult top_right_hit_result_test = SquareRightOfLineTester_TestNextStep(p_tester, 1, 0, depth);
+    SquareRightOfLineTesterResult bottom_left_hit_result_test = SquareRightOfLineTester_TestNextStep(p_tester, 0, 1, depth);
+    SquareRightOfLineTesterResult bottom_right_hit_result_test = SquareRightOfLineTester_TestNextStep(p_tester, 1, 1, depth);
 
     // Values assumed correct
     bool top_left_complete_hit;
@@ -116,8 +116,8 @@ void test_square_right_of_line_gui_recursive(uint32_t* pixels, int32_t width, in
     {
         SquareRightOfLineTester_StepInFromResult(p_tester, &top_left_hit_result_test);
         test_square_right_of_line_gui_recursive(pixels, width, height, x1, y1, x2, y2,
-            square_x, square_y, half_width, p_tester);
-        SquareRightOfLineTester_StepOutFromResult(p_tester, 0, 0);
+            square_x, square_y, half_width, p_tester, depth + 1);
+        SquareRightOfLineTester_StepOutFromResult(p_tester, 0, 0, depth);
 
         if (top_left_complete_hit && square_width >= 256)
             fill_square_outline(pixels, width, height, square_x, square_y, half_width, depth_0_color);
@@ -132,8 +132,8 @@ void test_square_right_of_line_gui_recursive(uint32_t* pixels, int32_t width, in
     {
         SquareRightOfLineTester_StepInFromResult(p_tester, &top_right_hit_result_test);
         test_square_right_of_line_gui_recursive(pixels, width, height, x1, y1, x2, y2,
-            square_x + half_width, square_y, half_width, p_tester);
-        SquareRightOfLineTester_StepOutFromResult(p_tester, 1, 0);
+            square_x + half_width, square_y, half_width, p_tester, depth + 1);
+        SquareRightOfLineTester_StepOutFromResult(p_tester, 1, 0, depth);
         if (top_right_complete_hit && square_width >= 256)
             fill_square_outline(pixels, width, height, square_x + half_width, square_y, half_width, depth_0_color);
         else if (top_right_complete_hit && square_width >= 128)
@@ -149,8 +149,8 @@ void test_square_right_of_line_gui_recursive(uint32_t* pixels, int32_t width, in
     {
         SquareRightOfLineTester_StepInFromResult(p_tester, &bottom_left_hit_result_test);
         test_square_right_of_line_gui_recursive(pixels, width, height, x1, y1, x2, y2,
-            square_x, square_y + half_width, half_width, p_tester);
-        SquareRightOfLineTester_StepOutFromResult(p_tester, 0, 1);
+            square_x, square_y + half_width, half_width, p_tester, depth + 1);
+        SquareRightOfLineTester_StepOutFromResult(p_tester, 0, 1, depth);
         if (bottom_left_complete_hit && square_width >= 256)
             fill_square_outline(pixels, width, height, square_x, square_y + half_width, half_width, depth_0_color);
         else if (bottom_left_complete_hit && square_width >= 128)
@@ -164,8 +164,8 @@ void test_square_right_of_line_gui_recursive(uint32_t* pixels, int32_t width, in
     {
         SquareRightOfLineTester_StepInFromResult(p_tester, &bottom_right_hit_result_test);
         test_square_right_of_line_gui_recursive(pixels, width, height, x1, y1, x2, y2,
-            square_x + half_width, square_y + half_width, half_width, p_tester);
-        SquareRightOfLineTester_StepOutFromResult(p_tester, 1, 1);
+            square_x + half_width, square_y + half_width, half_width, p_tester, depth + 1);
+        SquareRightOfLineTester_StepOutFromResult(p_tester, 1, 1, depth);
         if (bottom_right_complete_hit && square_width >= 256)
             fill_square_outline(pixels, width, height, square_x + half_width, square_y + half_width, half_width, depth_0_color);
         else if (bottom_right_complete_hit && square_width >= 128)
@@ -184,7 +184,7 @@ typedef struct
     int32_t width, height;
 } TestSquareRightOfLineGUIStruct;
 
-bool test_square_right_of_line_gui_callback(void* user_data, int32_t square_x, int32_t square_y, int32_t square_width, int32_t square_width_log2, bool complete_hit)
+bool test_square_right_of_line_gui_callback(void* user_data, int32_t square_x, int32_t square_y, int32_t square_width, int32_t depth, bool complete_hit)
 {
     TestSquareRightOfLineGUIStruct* p_info = (TestSquareRightOfLineGUIStruct*)user_data;
 

@@ -156,7 +156,7 @@ TEST(SquareRightOfLine, InitializationTest) {
 }
 
 void test_verify_SquareRightOfLineTeseter_GoForward_recursive(int32_t x1, int32_t y1, int32_t x2, int32_t y2, int32_t square_x, int32_t square_y, int32_t square_width,
-    SquareRightOfLineTester tester)
+    SquareRightOfLineTester tester, int depth)
 {
     SquareRightOfLineTesterResult result;
     SquareRightOfLineTester next_step;
@@ -165,47 +165,48 @@ void test_verify_SquareRightOfLineTeseter_GoForward_recursive(int32_t x1, int32_
     if (square_width > 1)
     {
         // Verify top-left works properly
-        result = SquareRightOfLineTester_TestNextStep(&tester, 0, 0);
+        result = SquareRightOfLineTester_TestNextStep(&tester, 0, 0, depth);
         partial_hit = correct_square_right_of_line(x1, y1, x2, y2, square_x, square_y, half_width, &complete_hit);
         EXPECT_EQ(result.partial_hit, partial_hit);
         EXPECT_EQ(result.complete_hit, complete_hit);
         next_step = tester;
         SquareRightOfLineTester_StepInFromResult(&next_step, &result);
-        test_verify_SquareRightOfLineTeseter_GoForward_recursive(x1, y1, x2, y2, square_x, square_y, half_width, next_step);
+        test_verify_SquareRightOfLineTeseter_GoForward_recursive(x1, y1, x2, y2, square_x, square_y, half_width, next_step, depth + 1);
 
         // Verify top-right works properly
-        result = SquareRightOfLineTester_TestNextStep(&tester, 1, 0);
+        result = SquareRightOfLineTester_TestNextStep(&tester, 1, 0, depth);
         partial_hit = correct_square_right_of_line(x1, y1, x2, y2, square_x + half_width, square_y, half_width, &complete_hit);
         EXPECT_EQ(result.partial_hit, partial_hit);
         EXPECT_EQ(result.complete_hit, complete_hit);
         next_step = tester;
         SquareRightOfLineTester_StepInFromResult(&next_step, &result);
-        test_verify_SquareRightOfLineTeseter_GoForward_recursive(x1, y1, x2, y2, square_x + half_width, square_y, half_width, next_step);
+        test_verify_SquareRightOfLineTeseter_GoForward_recursive(x1, y1, x2, y2, square_x + half_width, square_y, half_width, next_step, depth + 1);
 
         // Verify bottom-left works properly
-        result = SquareRightOfLineTester_TestNextStep(&tester, 0, 1);
+        result = SquareRightOfLineTester_TestNextStep(&tester, 0, 1, depth);
         partial_hit = correct_square_right_of_line(x1, y1, x2, y2, square_x, square_y + half_width, half_width, &complete_hit);
         EXPECT_EQ(result.partial_hit, partial_hit);
         EXPECT_EQ(result.complete_hit, complete_hit);
         next_step = tester;
         SquareRightOfLineTester_StepInFromResult(&next_step, &result);
-        test_verify_SquareRightOfLineTeseter_GoForward_recursive(x1, y1, x2, y2, square_x, square_y + half_width, half_width, next_step);
+        test_verify_SquareRightOfLineTeseter_GoForward_recursive(x1, y1, x2, y2, square_x, square_y + half_width, half_width, next_step, depth + 1);
 
         // Verify top-right works properly
-        result = SquareRightOfLineTester_TestNextStep(&tester, 1, 1);
+        result = SquareRightOfLineTester_TestNextStep(&tester, 1, 1, depth);
         partial_hit = correct_square_right_of_line(x1, y1, x2, y2, square_x + half_width, square_y + half_width, half_width, &complete_hit);
         EXPECT_EQ(result.partial_hit, partial_hit);
         EXPECT_EQ(result.complete_hit, complete_hit);
         next_step = tester;
         SquareRightOfLineTester_StepInFromResult(&next_step, &result);
-        test_verify_SquareRightOfLineTeseter_GoForward_recursive(x1, y1, x2, y2, square_x + half_width, square_y + half_width, half_width, next_step);
+        test_verify_SquareRightOfLineTeseter_GoForward_recursive(x1, y1, x2, y2, square_x + half_width, square_y + half_width, half_width, next_step, depth + 1);
     }
 }
 
 void test_verify_SquareRightOfLineTeseter_GoForward(int32_t x1, int32_t y1, int32_t x2, int32_t y2, int32_t square_x, int32_t square_y, int32_t square_width)
 {
     SquareRightOfLineTester tester = SquareRightOfLineTester_init(x1, y1, x2, y2, square_x, square_y, square_width);
-    test_verify_SquareRightOfLineTeseter_GoForward_recursive(x1, y1, x2, y2, square_x, square_y, square_width, tester);
+    int depth = 1;
+    test_verify_SquareRightOfLineTeseter_GoForward_recursive(x1, y1, x2, y2, square_x, square_y, square_width, tester, depth);
 }
 
 TEST(SquareRightOfLine, GoForwardTest) {
@@ -290,7 +291,7 @@ TEST(SquareRightOfLine, GoForwardTest) {
 
 
 void test_verify_SquareRightOfLineTeseter_GoBack_recursive(int32_t x1, int32_t y1, int32_t x2, int32_t y2, int32_t square_x, int32_t square_y, int32_t square_width,
-    SquareRightOfLineTester tester_correct, SquareRightOfLineTester *p_tester)
+    SquareRightOfLineTester tester_correct, SquareRightOfLineTester *p_tester, int depth)
 {
     SquareRightOfLineTesterResult result;
     SquareRightOfLineTester next_step;
@@ -301,12 +302,12 @@ void test_verify_SquareRightOfLineTeseter_GoBack_recursive(int32_t x1, int32_t y
     {
         int dx = rand() % 2;
         int dy = rand() % 2;
-        result = SquareRightOfLineTester_TestNextStep(p_tester, dx, dy);
+        result = SquareRightOfLineTester_TestNextStep(p_tester, dx, dy, depth);
         next_step = *p_tester;
         SquareRightOfLineTester_StepInFromResult(p_tester, &result);
         test_verify_SquareRightOfLineTeseter_GoBack_recursive(x1, y1, x2, y2, square_x + (dx * half_width), square_y + (dy * half_width), half_width,
-            next_step, p_tester);
-        SquareRightOfLineTester_StepOutFromResult(p_tester, dx, dy);
+            next_step, p_tester, depth + 1);
+        SquareRightOfLineTester_StepOutFromResult(p_tester, dx, dy, depth);
         EXPECT_EQ(tester_correct.dx, p_tester->dx);
         EXPECT_EQ(tester_correct.dy, p_tester->dy);
         EXPECT_EQ(tester_correct.far_value, p_tester->far_value);
@@ -320,7 +321,8 @@ void test_verify_SquareRightOfLineTeseter_GoBack_recursive(int32_t x1, int32_t y
 void test_verify_SquareRightOfLineTeseter_GoBack(int32_t x1, int32_t y1, int32_t x2, int32_t y2, int32_t square_x, int32_t square_y, int32_t square_width)
 {
     SquareRightOfLineTester tester = SquareRightOfLineTester_init(x1, y1, x2, y2, square_x, square_y, square_width);
-    test_verify_SquareRightOfLineTeseter_GoBack_recursive(x1, y1, x2, y2, square_x, square_y, square_width, tester, &tester);
+    int depth = 1;
+    test_verify_SquareRightOfLineTeseter_GoBack_recursive(x1, y1, x2, y2, square_x, square_y, square_width, tester, &tester, depth);
 }
 
 TEST(SquareRightOfLine, GoBackwardsTest) {

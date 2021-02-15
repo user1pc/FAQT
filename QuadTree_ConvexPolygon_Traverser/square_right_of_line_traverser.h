@@ -16,15 +16,15 @@ extern "C" {
 /// @param square_x X coordinate of the top-left (min x, min y) point where the current node is located in the quadtree.
 /// @param square_y Y coordinate of the top-left (min x, min y) point where the current node is located in the quadtree.
 /// @param square_width width of the current node in the quadtree. Will always be a power of 2.
-/// @param square_width_log2 log base 2 of square_width. This can also be interpreted as the opposite of the depth in the tree.
-/// A value of zero occurs on leaf nodes, going up by 1 for every level up in the quadtree.
+/// @param depth depth in the tree. The very first value will be 1, because its impossible to traverse the root node itself,
+/// only its children.
 /// complete_hit True if the region defined by square_x, square_y, and square_width is completely right of the line.
 /// False if the region partially intersects the line. If the line lies exactly on any edge/corner of the square, that is 
 /// considered a partial hit and will cause complete_hit to be false.
 /// @returns True if the user wishes to traverse further into this node, or false to explore other nodes.
 /// Value is ignored if the current node is a leaf node.
 typedef bool (*SquareRightOfLineTraverserPreOrderCallback)(void* user_data, int32_t square_x, int32_t square_y, int32_t square_width,
-    int32_t square_width_log2, bool complete_hit);
+    int32_t depth, bool complete_hit);
 
 /// Traverses (pre-order) a quadtree over all squares that are right of (or exactly on) a line.
 /// @param x1 x coordinate of the 1st point on the line.

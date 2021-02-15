@@ -53,7 +53,6 @@ SquareRightOfLineTester SquareRightOfLineTester_init(int32_t x1, int32_t y1, int
     tester.dx = -dy * square_width;
     tester.normal_y_sign = normal_y_sign;
     tester.dy = dx * square_width;
-    tester.depth = 1;
     return tester;
 }
 
@@ -62,12 +61,13 @@ SquareRightOfLineTester SquareRightOfLineTester_init(int32_t x1, int32_t y1, int
 /// @param p_tester pointer to the tester to test on.
 /// @param dx if zero, will test the left side of this current square node. Otherwise if nonzero tests the right side.
 /// @param dy if zero, will test the top side of this current square node. Otherwise if nonzero tests the bottom side.
+/// @param node_depth Depth in the tree from initialization. 1 to get from the 1st (root )node to the 2nd level.
 /// @returns a SquareRightOfLineTesterResult struct defining if there is a partial/complete hit + some other internal use
 /// data.
-SquareRightOfLineTesterResult SquareRightOfLineTester_TestNextStep(SquareRightOfLineTester* p_tester, int dx, int dy)
+SquareRightOfLineTesterResult SquareRightOfLineTester_TestNextStep(SquareRightOfLineTester* p_tester, int dx, int dy, int node_depth)
 {
-    int64_t local_dx = p_tester->dx >> p_tester->depth;
-    int64_t local_dy = p_tester->dy >> p_tester->depth;
+    int64_t local_dx = p_tester->dx >> (int64_t)node_depth;
+    int64_t local_dy = p_tester->dy >> (int64_t)node_depth;
     SquareRightOfLineTesterResult result;
     result.near_value = p_tester->near_value;
     result.far_value = p_tester->far_value;
@@ -116,18 +116,17 @@ void SquareRightOfLineTester_StepInFromResult(SquareRightOfLineTester* p_tester,
 {
     p_tester->near_value = p_result->near_value;
     p_tester->far_value = p_result->far_value;
-    p_tester->depth++;
 }
 
 /// Steps up in the tree to a parent node.
-/// @param p_tester The tester to step up to its parent node.
+/// @param p_tester the tester to step up to its parent node.
 /// @param dx nonzero if the node in p_tester is a right-child of its parent. Zero if it is a left-child of its parent.
 /// @param dy nonzero if the node in p_tester is a bottom-child of its parent. Zero if it is a top-child of its parent.
-void SquareRightOfLineTester_StepOutFromResult(SquareRightOfLineTester* p_tester, int dx, int dy)
+/// @param parent_depth the depth of the parent node. Measured starting with 1 on the root node.
+void SquareRightOfLineTester_StepOutFromResult(SquareRightOfLineTester* p_tester, int dx, int dy, int parent_depth)
 {
-    p_tester->depth--;
-    int64_t local_dx = p_tester->dx >> p_tester->depth;
-    int64_t local_dy = p_tester->dy >> p_tester->depth;
+    int64_t local_dx = p_tester->dx >> (int64_t)parent_depth;
+    int64_t local_dy = p_tester->dy >> (int64_t)parent_depth;
     if (dx > 0)
     {
         if (p_tester->normal_x_sign >= 0)

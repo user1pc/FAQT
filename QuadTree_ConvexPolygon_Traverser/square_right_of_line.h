@@ -17,7 +17,6 @@ typedef struct
     int64_t near_value, far_value;
     int64_t dx, dy;
     int64_t normal_x_sign, normal_y_sign;
-    int depth;
 } SquareRightOfLineTester;
 
 /// Sets up a system for testing if a square (as part of a quadtree traversal) will be on the
@@ -46,9 +45,10 @@ typedef struct
 /// @param p_tester pointer to the tester to test on.
 /// @param dx if zero, will test the left side of this current square node. Otherwise if nonzero tests the right side.
 /// @param dy if zero, will test the top side of this current square node. Otherwise if nonzero tests the bottom side.
+/// @param node_depth Depth in the tree from initialization. 1 to get from the 1st (root )node to the 2nd level.
 /// @returns a SquareRightOfLineTesterResult struct defining if there is a partial/complete hit + some other internal use
 /// data.
-SquareRightOfLineTesterResult SquareRightOfLineTester_TestNextStep(SquareRightOfLineTester* p_tester, int dx, int dy);
+SquareRightOfLineTesterResult SquareRightOfLineTester_TestNextStep(SquareRightOfLineTester* p_tester, int dx, int dy, int depth);
 
 /// Steps down into the next node during traversal of a SquareRightOfLineTester.
 /// @param p_tester The current testing struct.
@@ -56,10 +56,11 @@ SquareRightOfLineTesterResult SquareRightOfLineTester_TestNextStep(SquareRightOf
 void SquareRightOfLineTester_StepInFromResult(SquareRightOfLineTester* p_tester, const SquareRightOfLineTesterResult* p_result);
 
 /// Steps up in the tree to a parent node.
-/// @param p_tester The tester to step up to its parent node.
+/// @param p_tester the tester to step up to its parent node.
 /// @param dx nonzero if the node in p_tester is a right-child of its parent. Zero if it is a left-child of its parent.
 /// @param dy nonzero if the node in p_tester is a bottom-child of its parent. Zero if it is a top-child of its parent.
-void SquareRightOfLineTester_StepOutFromResult(SquareRightOfLineTester* p_tester, int dx, int dy);
+/// @param parent_depth the depth of the parent node. Measured starting with 1 on the root node.
+void SquareRightOfLineTester_StepOutFromResult(SquareRightOfLineTester* p_tester, int dx, int dy, int parent_depth);
 
 #ifdef __cplusplus
 }
