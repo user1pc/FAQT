@@ -11,8 +11,8 @@ BITMAPINFOHEADER bmih;
 uint32_t* frame = NULL;
 
 // square position, width
-int32_t square_x = 400;
-int32_t square_y = 400;
+int32_t square_x = 512;
+int32_t square_y = 512;
 int32_t square_width_log2 = 8;
 int32_t square_width = 256;
 

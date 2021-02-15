@@ -1,6 +1,6 @@
 
-/// square_right_of_line.h
-/// Provides a very fast system for testing if a square (in powers of 2) is to the right side of a given line.
+/// square_right_of_line.c
+/// Defines a system for quickly testing if a square (must be a power of 2) in a quadtree traversal is right of (or on) a line.
 
 #ifndef SQUARE_RIGHT_OF_LINE_H
 #define SQUARE_RIGHT_OF_LINE_H

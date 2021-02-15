@@ -1,4 +1,7 @@
 
+/// square_right_of_line_traverser.c
+/// Provides functions which will traverse a quadtree, searching only the squares that are to the right of a given line.
+
 #include "square_right_of_line_traverser.h"
 
 void SquareRightOfLineTraversePreOrder(int32_t x1, int32_t y1, int32_t x2, int32_t y2,
@@ -9,8 +12,8 @@ void SquareRightOfLineTraversePreOrder(int32_t x1, int32_t y1, int32_t x2, int32
     int32_t half_width = 1 << (starting_width_log2 - 1);
     int32_t depth = starting_width_log2;
     SquareRightOfLineTester tester = SquareRightOfLineTester_init(x1, y1, x2, y2, starting_x, starting_y, width);
-    int32_t current_x = 0;
-    int32_t current_y = 0;
+    int32_t current_x = starting_x;
+    int32_t current_y = starting_y;
     int32_t current_mask = width - 1;
     int32_t dx = 0;
     int32_t dy = 0;
@@ -36,7 +39,7 @@ void SquareRightOfLineTraversePreOrder(int32_t x1, int32_t y1, int32_t x2, int32
         SquareRightOfLineTesterResult result = SquareRightOfLineTester_TestNextStep(&tester, dx, dy);
         bool go_deeper = false;
         if (result.partial_hit)
-            go_deeper = callback(user_data, current_x + starting_x, current_y + starting_y, half_width, half_width_log2, result.complete_hit);
+            go_deeper = callback(user_data, current_x, current_y, half_width, half_width_log2, result.complete_hit);
         go_deeper &= half_width > 1; // if half_width == 1, we are at a leaf node. Can't go deeper.
 
         if (go_deeper)

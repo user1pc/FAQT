@@ -1,4 +1,8 @@
 
+/// test_square_right_of_line_gui.h
+/// A win32 app showing a very simple & small example/test of the quadtree square right of line traversal.
+/// This isn't well documented and isn't too important to read. Its just for a demo.
+
 #ifndef TEST_SQUARE_RIGHT_OF_LINE_H
 #define TEST_SQUARE_RIGHT_OF_LINE_H
 
