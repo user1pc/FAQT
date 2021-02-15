@@ -122,7 +122,7 @@ void test_square_right_of_line_traverser_fill_complete(int32_t x1, int32_t y1, i
     info.height = height;
     info.actions = nullptr;
     info.num_actions = 0;
-    SquareRightOfLineTraverse(x1, y1, x2, y2, square_x, square_y, square_width_log2, test_square_right_of_line_traverser_fill_complete_callback, &info);
+    SquareRightOfLineTraversePreOrder(x1, y1, x2, y2, square_x, square_y, square_width_log2, test_square_right_of_line_traverser_fill_complete_callback, &info);
 
     for (int32_t y = 0; y < height; y++)
     {
@@ -266,7 +266,7 @@ void test_square_right_of_line_traverser_fill_random(int32_t x1, int32_t y1, int
     info.height = height;
     info.actions = actions;
     info.num_actions = num_actions;
-    SquareRightOfLineTraverse(x1, y1, x2, y2, square_x, square_y, square_width_log2, test_square_right_of_line_traverser_fill_random_callback, &info);
+    SquareRightOfLineTraversePreOrder(x1, y1, x2, y2, square_x, square_y, square_width_log2, test_square_right_of_line_traverser_fill_random_callback, &info);
 
     bool all_success = true;
     for (int32_t y = 0; y < height; y++)
