@@ -38,14 +38,14 @@ bool correct_square_right_of_line(int64_t x1, int64_t y1, int64_t x2, int64_t y2
     int64_t square_x, int64_t square_y, int64_t square_width, bool* out_complete_hit)
 {
     bool top_left_hit = correct_point_right_of_or_on_line(x1, y1, x2, y2, square_x, square_y);
-    bool top_right_hit = correct_point_right_of_or_on_line(x1, y1, x2, y2, square_x + square_width, square_y);
-    bool bottom_left_hit = correct_point_right_of_or_on_line(x1, y1, x2, y2, square_x, square_y + square_width);
-    bool bottom_right_hit = correct_point_right_of_or_on_line(x1, y1, x2, y2, square_x + square_width, square_y + square_width);
+    bool top_right_hit = correct_point_right_of_or_on_line(x1, y1, x2, y2, square_x + square_width - 1, square_y);
+    bool bottom_left_hit = correct_point_right_of_or_on_line(x1, y1, x2, y2, square_x, square_y + square_width - 1);
+    bool bottom_right_hit = correct_point_right_of_or_on_line(x1, y1, x2, y2, square_x + square_width - 1, square_y + square_width - 1);
 
     bool top_left_hit_complete = correct_point_right_of_line(x1, y1, x2, y2, square_x, square_y);
-    bool top_right_hit_complete = correct_point_right_of_line(x1, y1, x2, y2, square_x + square_width, square_y);
-    bool bottom_left_hit_complete = correct_point_right_of_line(x1, y1, x2, y2, square_x, square_y + square_width);
-    bool bottom_right_hit_complete = correct_point_right_of_line(x1, y1, x2, y2, square_x + square_width, square_y + square_width);
+    bool top_right_hit_complete = correct_point_right_of_line(x1, y1, x2, y2, square_x + square_width - 1, square_y);
+    bool bottom_left_hit_complete = correct_point_right_of_line(x1, y1, x2, y2, square_x, square_y + square_width - 1);
+    bool bottom_right_hit_complete = correct_point_right_of_line(x1, y1, x2, y2, square_x + square_width - 1, square_y + square_width - 1);
     *out_complete_hit = top_left_hit_complete && top_right_hit_complete && bottom_left_hit_complete && bottom_right_hit_complete;
     return top_left_hit || top_right_hit || bottom_left_hit || bottom_right_hit;
 }
@@ -155,7 +155,7 @@ TEST(SquareRightOfLine, InitializationTest) {
     }
 }
 
-void test_verify_SquareRightOfLineTeseter_GoForward_recursive(int32_t x1, int32_t y1, int32_t x2, int32_t y2, int32_t square_x, int32_t square_y, int32_t square_width,
+bool test_verify_SquareRightOfLineTeseter_GoForward_recursive(int32_t x1, int32_t y1, int32_t x2, int32_t y2, int32_t square_x, int32_t square_y, int32_t square_width,
     SquareRightOfLineTester tester, int depth)
 {
     SquareRightOfLineTesterResult result;
@@ -167,8 +167,8 @@ void test_verify_SquareRightOfLineTeseter_GoForward_recursive(int32_t x1, int32_
         // Verify top-left works properly
         result = SquareRightOfLineTester_TestNextStep(&tester, 0, 0, depth);
         partial_hit = correct_square_right_of_line(x1, y1, x2, y2, square_x, square_y, half_width, &complete_hit);
-        EXPECT_EQ(result.partial_hit, partial_hit);
-        EXPECT_EQ(result.complete_hit, complete_hit);
+        if (result.partial_hit != partial_hit)
+            return false;
         next_step = tester;
         SquareRightOfLineTester_StepInFromResult(&next_step, &result);
         test_verify_SquareRightOfLineTeseter_GoForward_recursive(x1, y1, x2, y2, square_x, square_y, half_width, next_step, depth + 1);
@@ -176,8 +176,8 @@ void test_verify_SquareRightOfLineTeseter_GoForward_recursive(int32_t x1, int32_
         // Verify top-right works properly
         result = SquareRightOfLineTester_TestNextStep(&tester, 1, 0, depth);
         partial_hit = correct_square_right_of_line(x1, y1, x2, y2, square_x + half_width, square_y, half_width, &complete_hit);
-        EXPECT_EQ(result.partial_hit, partial_hit);
-        EXPECT_EQ(result.complete_hit, complete_hit);
+        if (result.partial_hit != partial_hit)
+            return false;
         next_step = tester;
         SquareRightOfLineTester_StepInFromResult(&next_step, &result);
         test_verify_SquareRightOfLineTeseter_GoForward_recursive(x1, y1, x2, y2, square_x + half_width, square_y, half_width, next_step, depth + 1);
@@ -185,8 +185,8 @@ void test_verify_SquareRightOfLineTeseter_GoForward_recursive(int32_t x1, int32_
         // Verify bottom-left works properly
         result = SquareRightOfLineTester_TestNextStep(&tester, 0, 1, depth);
         partial_hit = correct_square_right_of_line(x1, y1, x2, y2, square_x, square_y + half_width, half_width, &complete_hit);
-        EXPECT_EQ(result.partial_hit, partial_hit);
-        EXPECT_EQ(result.complete_hit, complete_hit);
+        if (result.partial_hit != partial_hit)
+            return false;
         next_step = tester;
         SquareRightOfLineTester_StepInFromResult(&next_step, &result);
         test_verify_SquareRightOfLineTeseter_GoForward_recursive(x1, y1, x2, y2, square_x, square_y + half_width, half_width, next_step, depth + 1);
@@ -194,19 +194,21 @@ void test_verify_SquareRightOfLineTeseter_GoForward_recursive(int32_t x1, int32_
         // Verify top-right works properly
         result = SquareRightOfLineTester_TestNextStep(&tester, 1, 1, depth);
         partial_hit = correct_square_right_of_line(x1, y1, x2, y2, square_x + half_width, square_y + half_width, half_width, &complete_hit);
-        EXPECT_EQ(result.partial_hit, partial_hit);
-        EXPECT_EQ(result.complete_hit, complete_hit);
+        if (result.partial_hit != partial_hit)
+            return false;
         next_step = tester;
         SquareRightOfLineTester_StepInFromResult(&next_step, &result);
         test_verify_SquareRightOfLineTeseter_GoForward_recursive(x1, y1, x2, y2, square_x + half_width, square_y + half_width, half_width, next_step, depth + 1);
     }
+    return true;
 }
 
 void test_verify_SquareRightOfLineTeseter_GoForward(int32_t x1, int32_t y1, int32_t x2, int32_t y2, int32_t square_x, int32_t square_y, int32_t square_width)
 {
     SquareRightOfLineTester tester = SquareRightOfLineTester_init(x1, y1, x2, y2, square_x, square_y, square_width);
     int depth = 1;
-    test_verify_SquareRightOfLineTeseter_GoForward_recursive(x1, y1, x2, y2, square_x, square_y, square_width, tester, depth);
+    bool success = test_verify_SquareRightOfLineTeseter_GoForward_recursive(x1, y1, x2, y2, square_x, square_y, square_width, tester, depth);
+    EXPECT_TRUE(success);
 }
 
 TEST(SquareRightOfLine, GoForwardTest) {
@@ -272,6 +274,80 @@ TEST(SquareRightOfLine, GoForwardTest) {
     test_verify_SquareRightOfLineTeseter_GoForward(0, 1024 * 1024, 1024 * 1024, 0, 0, 0, 1024);
     test_verify_SquareRightOfLineTeseter_GoForward(1024 * 1024, 0, 0, 1024 * 1024, 0, 0, 1024);
 
+    // Lines that are near the edges of the square (vertical)
+    test_verify_SquareRightOfLineTeseter_GoForward(-1, 0, -1, 1, 0, 0, 8);
+    test_verify_SquareRightOfLineTeseter_GoForward(-1, 0, -1, -1, 0, 0, 8);
+    test_verify_SquareRightOfLineTeseter_GoForward(0, 0, 0, 1, 0, 0, 8);
+    test_verify_SquareRightOfLineTeseter_GoForward(0, 0, 0, -1, 0, 0, 8);
+    test_verify_SquareRightOfLineTeseter_GoForward(1, 0, 1, 1, 0, 0, 8);
+    test_verify_SquareRightOfLineTeseter_GoForward(1, 0, 1, -1, 0, 0, 8);
+    test_verify_SquareRightOfLineTeseter_GoForward(7, 0, 7, 1, 0, 0, 8);
+    test_verify_SquareRightOfLineTeseter_GoForward(7, 0, 7, -1, 0, 0, 8);
+    test_verify_SquareRightOfLineTeseter_GoForward(8, 0, 8, 1, 0, 0, 8);
+    test_verify_SquareRightOfLineTeseter_GoForward(8, 0, 8, -1, 0, 0, 8);
+    test_verify_SquareRightOfLineTeseter_GoForward(9, 0, 9, 1, 0, 0, 8);
+    test_verify_SquareRightOfLineTeseter_GoForward(9, 0, 9, -1, 0, 0, 8);
+
+    // Lines that are near the edges of the square (horizontal)
+    test_verify_SquareRightOfLineTeseter_GoForward(0, -1, 1, -1, 0, 0, 8);
+    test_verify_SquareRightOfLineTeseter_GoForward(0, -1, -1, -1, 0, 0, 8);
+    test_verify_SquareRightOfLineTeseter_GoForward(0, 0, 1, 0, 0, 0, 8);
+    test_verify_SquareRightOfLineTeseter_GoForward(0, 0, -1, 0, 0, 0, 8);
+    test_verify_SquareRightOfLineTeseter_GoForward(0, 1, 1, 1, 0, 0, 8);
+    test_verify_SquareRightOfLineTeseter_GoForward(0, 1, -1, 1, 0, 0, 8);
+    test_verify_SquareRightOfLineTeseter_GoForward(0, 7, 1, 7, 0, 0, 8);
+    test_verify_SquareRightOfLineTeseter_GoForward(0, 7, -1, 7, 0, 0, 8);
+    test_verify_SquareRightOfLineTeseter_GoForward(0, 8, 1, 8, 0, 0, 8);
+    test_verify_SquareRightOfLineTeseter_GoForward(0, 8, -1, 8, 0, 0, 8);
+    test_verify_SquareRightOfLineTeseter_GoForward(0, 9, 1, 9, 0, 0, 8);
+    test_verify_SquareRightOfLineTeseter_GoForward(0, 9, -1, 9, 0, 0, 8);
+
+    // Lines that are near the middle of the square (vertical)
+    test_verify_SquareRightOfLineTeseter_GoForward(3, 0, 3, 1, 0, 0, 8);
+    test_verify_SquareRightOfLineTeseter_GoForward(3, 0, 3, -1, 0, 0, 8);
+    test_verify_SquareRightOfLineTeseter_GoForward(4, 0, 4, 1, 0, 0, 8);
+    test_verify_SquareRightOfLineTeseter_GoForward(4, 0, 4, -1, 0, 0, 8);
+    test_verify_SquareRightOfLineTeseter_GoForward(5, 0, 5, 1, 0, 0, 8);
+    test_verify_SquareRightOfLineTeseter_GoForward(5, 0, 5, -1, 0, 0, 8);
+
+    // Lines that are near the middle of the square (horizontal)
+    test_verify_SquareRightOfLineTeseter_GoForward(0, 3, 1, 3, 0, 0, 8);
+    test_verify_SquareRightOfLineTeseter_GoForward(0, 3, -1, 3, 0, 0, 8);
+    test_verify_SquareRightOfLineTeseter_GoForward(0, 4, 1, 4, 0, 0, 8);
+    test_verify_SquareRightOfLineTeseter_GoForward(0, 4, -1, 4, 0, 0, 8);
+    test_verify_SquareRightOfLineTeseter_GoForward(0, 5, 1, 5, 0, 0, 8);
+    test_verify_SquareRightOfLineTeseter_GoForward(0, 5, -1, 5, 0, 0, 8);
+
+
+
+    // Lines that are near the quarter-middles of the square (vertical)
+    test_verify_SquareRightOfLineTeseter_GoForward(3, 0, 3, 1, 0, 0, 16);
+    test_verify_SquareRightOfLineTeseter_GoForward(3, 0, 3, -1, 0, 0, 16);
+    test_verify_SquareRightOfLineTeseter_GoForward(4, 0, 4, 1, 0, 0, 16);
+    test_verify_SquareRightOfLineTeseter_GoForward(4, 0, 4, -1, 0, 0, 16);
+    test_verify_SquareRightOfLineTeseter_GoForward(5, 0, 5, 1, 0, 0, 16);
+    test_verify_SquareRightOfLineTeseter_GoForward(5, 0, 5, -1, 0, 0, 16);
+    test_verify_SquareRightOfLineTeseter_GoForward(11, 0, 11, 1, 0, 0, 16);
+    test_verify_SquareRightOfLineTeseter_GoForward(11, 0, 11, -1, 0, 0, 16);
+    test_verify_SquareRightOfLineTeseter_GoForward(12, 0, 12, 1, 0, 0, 16);
+    test_verify_SquareRightOfLineTeseter_GoForward(12, 0, 12, -1, 0, 0, 16);
+    test_verify_SquareRightOfLineTeseter_GoForward(13, 0, 13, 1, 0, 0, 16);
+    test_verify_SquareRightOfLineTeseter_GoForward(13, 0, 13, -1, 0, 0, 16);
+
+    // Lines that are near the quarter-middles of the square (horizontal)
+    test_verify_SquareRightOfLineTeseter_GoForward(0, 3, 1, 3, 0, 0, 16);
+    test_verify_SquareRightOfLineTeseter_GoForward(0, 3, -1, 3, 0, 0, 16);
+    test_verify_SquareRightOfLineTeseter_GoForward(0, 4, 1, 4, 0, 0, 16);
+    test_verify_SquareRightOfLineTeseter_GoForward(0, 4, -1, 4, 0, 0, 16);
+    test_verify_SquareRightOfLineTeseter_GoForward(0, 5, 1, 5, 0, 0, 16);
+    test_verify_SquareRightOfLineTeseter_GoForward(0, 5, -1, 5, 0, 0, 16);
+    test_verify_SquareRightOfLineTeseter_GoForward(0, 11, 1, 11, 0, 0, 16);
+    test_verify_SquareRightOfLineTeseter_GoForward(0, 11, -1, 11, 0, 0, 16);
+    test_verify_SquareRightOfLineTeseter_GoForward(0, 12, 1, 12, 0, 0, 16);
+    test_verify_SquareRightOfLineTeseter_GoForward(0, 12, -1, 12, 0, 0, 16);
+    test_verify_SquareRightOfLineTeseter_GoForward(0, 13, 1, 13, 0, 0, 16);
+    test_verify_SquareRightOfLineTeseter_GoForward(0, 13, -1, 13, 0, 0, 16);
+
     // Buncha random
     srand(1000);
     for (int i = 0; i < 100; i++)
@@ -290,7 +366,7 @@ TEST(SquareRightOfLine, GoForwardTest) {
 }
 
 
-void test_verify_SquareRightOfLineTeseter_GoBack_recursive(int32_t x1, int32_t y1, int32_t x2, int32_t y2, int32_t square_x, int32_t square_y, int32_t square_width,
+bool test_verify_SquareRightOfLineTeseter_GoBack_recursive(int32_t x1, int32_t y1, int32_t x2, int32_t y2, int32_t square_x, int32_t square_y, int32_t square_width,
     SquareRightOfLineTester tester_correct, SquareRightOfLineTester *p_tester, int depth)
 {
     SquareRightOfLineTesterResult result;
@@ -308,13 +384,20 @@ void test_verify_SquareRightOfLineTeseter_GoBack_recursive(int32_t x1, int32_t y
         test_verify_SquareRightOfLineTeseter_GoBack_recursive(x1, y1, x2, y2, square_x + (dx * half_width), square_y + (dy * half_width), half_width,
             next_step, p_tester, depth + 1);
         SquareRightOfLineTester_StepOutFromResult(p_tester, dx, dy, depth);
-        EXPECT_EQ(tester_correct.dx, p_tester->dx);
-        EXPECT_EQ(tester_correct.dy, p_tester->dy);
-        EXPECT_EQ(tester_correct.far_value, p_tester->far_value);
-        EXPECT_EQ(tester_correct.near_value, p_tester->near_value);
-        EXPECT_EQ(tester_correct.normal_x_sign, p_tester->normal_x_sign);
-        EXPECT_EQ(tester_correct.normal_y_sign, p_tester->normal_y_sign);
+        if (tester_correct.dx != p_tester->dx)
+            return false;
+        if (tester_correct.dy != p_tester->dy)
+            return false;
+        if (tester_correct.far_value != p_tester->far_value)
+            return false;
+        if (tester_correct.near_value != p_tester->near_value)
+            return false;
+        if (tester_correct.normal_x_sign != p_tester->normal_x_sign)
+            return false;
+        if (tester_correct.normal_y_sign != p_tester->normal_y_sign)
+            return false;
     }
+    return true;
 }
 
 
