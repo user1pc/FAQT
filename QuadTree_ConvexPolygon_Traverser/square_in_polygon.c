@@ -1,8 +1,9 @@
 
-/// square_right_of_line.c
+/*
+/// square_in_polygon.c
 /// Defines a system for quickly testing if a square (must be a power of 2) in a quadtree traversal is right of (or on) a line.
 
-#include "square_right_of_line.h"
+#include "square_in_polygon.h"
 
 /// Sets up a system for testing if a square (as part of a quadtree traversal) will be on the
 /// right side of an infinite line (and also distinguishes if the square intersects the line).
@@ -34,10 +35,10 @@ SquareRightOfLineTester SquareRightOfLineTester_init(int32_t x1, int32_t y1, int
     // consider the signs of this normal vector.
     int64_t normal_x_sign = dy;
     int64_t normal_y_sign = -dx;
-    int64_t box_near_point_x = ((normal_x_sign >= 0) ? ((int64_t)square_x) : ((int64_t)square_x + (int64_t)square_width - 1)) - x1;
-    int64_t box_near_point_y = ((normal_y_sign >= 0) ? ((int64_t)square_y) : ((int64_t)square_y + (int64_t)square_width - 1)) - y1;
-    int64_t box_far_point_x = ((normal_x_sign >= 0) ? ((int64_t)square_x + (int64_t)square_width - 1) : ((int64_t)square_x)) - x1;
-    int64_t box_far_point_y = ((normal_y_sign >= 0) ? ((int64_t)square_y + (int64_t)square_width - 1) : ((int64_t)square_y)) - y1;
+    int64_t box_near_point_x = ((normal_x_sign >= 0) ? ((int64_t)square_x) : ((int64_t)square_x + (int64_t)square_width)) - x1;
+    int64_t box_near_point_y = ((normal_y_sign >= 0) ? ((int64_t)square_y) : ((int64_t)square_y + (int64_t)square_width)) - y1;
+    int64_t box_far_point_x = ((normal_x_sign >= 0) ? ((int64_t)square_x + (int64_t)square_width) : ((int64_t)square_x)) - x1;
+    int64_t box_far_point_y = ((normal_y_sign >= 0) ? ((int64_t)square_y + (int64_t)square_width) : ((int64_t)square_y)) - y1;
 
     // Now that we have the line and the points, simply test if the point is clockwise of the line.
     // How? Each, the sign of the 2D cross product.
@@ -157,3 +158,4 @@ void SquareRightOfLineTester_StepOutFromResult(SquareRightOfLineTester* p_tester
             p_tester->near_value += local_dy;
     }
 }
+*/

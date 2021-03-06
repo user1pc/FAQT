@@ -21,12 +21,36 @@
     <ClCompile Include="square_right_of_line_traverser.c">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="square_in_polygon.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="square_right_of_line_DFS.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="line_square_intersection_traverser.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="draw_line.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="square_right_of_line.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="square_right_of_line_traverser.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="square_in_polygon.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="square_right_of_line_DFS.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="line_square_intersection_traverser.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="draw_line.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

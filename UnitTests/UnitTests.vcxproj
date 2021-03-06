@@ -37,9 +37,13 @@
     <LibraryPath>C:\code\FAQT\QuadTree_ConvexPolygon_Traverser\Debug;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemGroup>
+    <ClInclude Include="geometry_maths.h" />
     <ClInclude Include="pch.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="area_test.cpp" />
+    <ClCompile Include="DFS_test.cpp" />
+    <ClCompile Include="line_square_intersection_traverser_test.cpp" />
     <ClCompile Include="test_square_right_of_line.cpp" />
     <ClCompile Include="pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>

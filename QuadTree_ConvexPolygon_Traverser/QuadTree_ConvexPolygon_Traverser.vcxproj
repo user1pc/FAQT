@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Win32">
@@ -123,11 +123,19 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="draw_line.cpp" />
+    <ClCompile Include="line_square_intersection_traverser.c" />
+    <ClCompile Include="square_in_polygon.c" />
     <ClCompile Include="square_right_of_line.c" />
+    <ClCompile Include="square_right_of_line_DFS.c" />
     <ClCompile Include="square_right_of_line_traverser.c" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="draw_line.h" />
+    <ClInclude Include="line_square_intersection_traverser.h" />
+    <ClInclude Include="square_in_polygon.h" />
     <ClInclude Include="square_right_of_line.h" />
+    <ClInclude Include="square_right_of_line_DFS.h" />
     <ClInclude Include="square_right_of_line_traverser.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
