@@ -40,6 +40,15 @@ void SquareRightOfLineTraversePreOrder(int32_t x1, int32_t y1, int32_t x2, int32
     int32_t starting_x, int32_t starting_y, int32_t starting_width_log2,
     SquareRightOfLineTraverserPreOrderCallback callback, void* user_data);
 
+
+
+
+typedef void (*SquareRightOfLineTraverserDFSCallback)(void* user_data, int32_t square_x, int32_t square_y, int32_t square_width, int32_t depth);
+
+void SquareRightOfLineTraverseDepthFirst(int32_t x1, int32_t y1, int32_t x2, int32_t y2,
+    int32_t starting_x, int32_t starting_y, int32_t starting_width_log2,
+    SquareRightOfLineTraverserDFSCallback callback, void* user_data);
+
 #ifdef __cplusplus
 }
 #endif
