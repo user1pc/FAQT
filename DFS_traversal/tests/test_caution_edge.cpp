@@ -342,6 +342,66 @@ TEST(ManualTests, CautionEdgeTest)
     success = verify_caution_edge_manual(a_x1, a_y1, a_x2, a_y2, b_x1, b_y1, b_x2, b_y2, square_width,
         true);
     EXPECT_TRUE(success);
+
+    a_x1 = 16;
+    a_y1 = 16;
+    a_x2 = 32;
+    a_y2 = 32;
+    b_x1 = 40;
+    b_y1 = 24;
+    b_x2 = 24;
+    b_y2 = 8;
+    square_width = 4;
+    success = verify_caution_edge_manual(a_x1, a_y1, a_x2, a_y2, b_x1, b_y1, b_x2, b_y2, square_width,
+        true);
+    EXPECT_TRUE(success);
+    square_width = 2;
+    success = verify_caution_edge_manual(a_x1, a_y1, a_x2, a_y2, b_x1, b_y1, b_x2, b_y2, square_width,
+        true);
+    EXPECT_TRUE(success);
+    square_width = 1;
+    success = verify_caution_edge_manual(a_x1, a_y1, a_x2, a_y2, b_x1, b_y1, b_x2, b_y2, square_width,
+        true);
+    EXPECT_TRUE(success);
+
+    a_x1 = 0;
+    a_y1 = 0;
+    a_x2 = 16;
+    a_y2 = 16;
+    b_x1 = 7;
+    b_y1 = 9;
+    b_x2 = 0;
+    b_y2 = 16;
+    square_width = 4;
+    success = verify_caution_edge_manual(a_x1, a_y1, a_x2, a_y2, b_x1, b_y1, b_x2, b_y2, square_width,
+        true);
+    EXPECT_TRUE(success);
+
+    a_x1 = 0;
+    a_y1 = 1;
+    a_x2 = 16;
+    a_y2 = 17;
+    b_x1 = 5;
+    b_y1 = 11;
+    b_x2 = 0;
+    b_y2 = 16;
+    square_width = 4;
+    success = verify_caution_edge_manual(a_x1, a_y1, a_x2, a_y2, b_x1, b_y1, b_x2, b_y2, square_width,
+        std::vector<bool>{true, true, true, false});
+    EXPECT_TRUE(success);
+
+    a_x1 = 0;
+    a_y1 = 1;
+    a_x2 = 16;
+    a_y2 = 17;
+    b_x1 = 0;
+    b_y1 = 16;
+    b_x2 = 5;
+    b_y2 = 11;
+    square_width = 4;
+    success = verify_caution_edge_manual(a_x1, a_y1, a_x2, a_y2, b_x1, b_y1, b_x2, b_y2, square_width,
+        std::vector<bool>{true, true, true, false});
+    EXPECT_TRUE(success);
 }
 
 int main(int argc, char* argv[])
