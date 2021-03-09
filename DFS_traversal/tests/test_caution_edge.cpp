@@ -2,39 +2,116 @@
 #include "../polygon_caution_edge.h"
 #include "gtest/gtest.h"
 #include "../../line_traverser/line_traverser.h"
+#include "../../line_traverser/draw_line.h"
 #include <vector>
 
-bool test_caution_edge_square_right_of_line(int32_t x1, int32_t y1, int32_t x2, int32_t y2, int32_t square_x, int32_t square_y, int32_t square_width)
+typedef struct
 {
-    square_x *= square_width;
-    square_y *= square_width;
-    int32_t dx = x2 - x1;
-    int32_t dy = y2 - y1;
+    uint32_t *image_pixels;
+    int image_width, image_height;
+    PolygonEdgeTraverserCautionEdge caution_edge;
+    uint32_t avoid_color;
+    int i;
+    int32_t last_x, last_y;
+    bool success;
+} AutoVerifyCautionEdgeInfo;
 
-    if (dx == 0)
+void verify_caution_edge_lines_correct_callback(int32_t x, int32_t y, void *user_data)
+{
+    AutoVerifyCautionEdgeInfo *p_info = (AutoVerifyCautionEdgeInfo*)user_data;
+    if (p_info->i == 0)
     {
-        if (dy >= 0)
-            return square_x > x1;
-        else
-            return (square_x + square_width) <= x1;
+        p_info->last_x = x;
+        p_info->last_y = y;
     }
-    if (dy == 0)
+    else
     {
-        if (dx >= 0)
-            return square_y > y1;
-        else
-            return (square_y + square_width) <= y1;
+        if (x != p_info->last_x)
+            PolygonEdgeTraverserCautionEdge_move_x(&(p_info->caution_edge));
+        if (y != p_info->last_y)
+            PolygonEdgeTraverserCautionEdge_move_y(&(p_info->caution_edge));
+        p_info->last_x = x;
+        p_info->last_y = y;
     }
+    bool test_should_avoid = !PolygonEdgeTraverserCautionEdge_get(&(p_info->caution_edge), x, y);
+    bool correct_should_avoid = false;
+    if (x >= 0 && y >= 0 && x < p_info->image_width && y < p_info->image_height)
+        correct_should_avoid = p_info->image_pixels[y * p_info->image_height + x] == p_info->avoid_color;
 
-    int64_t normal_x_sign = dy;
-    int64_t normal_y_sign = -dx;
-    int64_t box_near_point_x = ((normal_x_sign >= 0) ? ((int64_t)square_x) : ((int64_t)square_x + (int64_t)square_width)) - x1;
-    int64_t box_near_point_y = ((normal_y_sign >= 0) ? ((int64_t)square_y) : ((int64_t)square_y + (int64_t)square_width)) - y1;
-    int64_t box_far_point_x = ((normal_x_sign >= 0) ? ((int64_t)square_x + (int64_t)square_width) : ((int64_t)square_x)) - x1;
-    int64_t box_far_point_y = ((normal_y_sign >= 0) ? ((int64_t)square_y + (int64_t)square_width) : ((int64_t)square_y)) - y1;
+    if (test_should_avoid != correct_should_avoid)
+        p_info->success = false;
+    p_info->i++;
+}
 
-    int64_t near_value = dx * box_near_point_y - dy * box_near_point_x;
-    return near_value < 0;
+bool verify_caution_edge_lines_correct_inner(int32_t a_x1, int32_t a_y1, int32_t a_x2, int32_t a_y2,
+    int32_t b_x1, int32_t b_y1, int32_t b_x2, int32_t b_y2, int32_t square_width,
+    int sandbox_width, int sandbox_height)
+{
+    int32_t dx = a_x2 - a_x1;
+    int32_t dy = a_y2 - a_y1;
+    uint32_t *pixels = new uint32_t[sandbox_width * sandbox_height];
+    memset(pixels, 0, sandbox_width * sandbox_height * sizeof(uint32_t));
+    drawline_include_endpoints(b_x1, b_y1, b_x2, b_y2, square_width, 1, pixels, sandbox_width, sandbox_height);
+    AutoVerifyCautionEdgeInfo info;
+    info.image_pixels = pixels;
+    info.image_width = sandbox_width;
+    info.image_height = sandbox_height;
+    info.i = 0;
+    info.success = true;
+    info.avoid_color = 1;
+    int32_t ep1x, ep1y, ep2x, ep2y;
+    LineTraverser_get_endpoints(a_x1, a_y1, a_x2, a_y2, square_width, &ep1x, &ep1y, &ep2x, &ep2y);
+    info.caution_edge = PolygonEdgeTraverserCautionEdge_init(b_x1, b_y1, b_x2, b_y2, ep1x, ep1y,
+        square_width, (dx >= 0) ? 1 : -1, (dy >= 0) ? 1 : -1);
+    LineTraverser_traverse_include_endpoints(a_x1, a_y1, a_x2, a_y2, square_width, verify_caution_edge_lines_correct_callback, &info);
+    delete[] pixels;
+    return info.success;
+}
+
+bool verify_caution_edge_lines_correct(int32_t a_x1, int32_t a_y1, int32_t a_x2, int32_t a_y2,
+    int32_t b_x1, int32_t b_y1, int32_t b_x2, int32_t b_y2, int32_t square_width,
+    int sandbox_width, int sandbox_height)
+{
+    bool success = verify_caution_edge_lines_correct_inner(a_x1, a_y1, a_x2, a_y2,
+        b_x1, b_y1, b_x2, b_y2, square_width, sandbox_width, sandbox_height);    
+    success &= verify_caution_edge_lines_correct_inner(a_x2, a_y2, a_x1, a_y1,
+        b_x1, b_y1, b_x2, b_y2, square_width, sandbox_width, sandbox_height);
+    success &= verify_caution_edge_lines_correct_inner(a_x1, a_y1, a_x2, a_y2,
+        b_x2, b_y2, b_x1, b_y1, square_width, sandbox_width, sandbox_height);
+    success &= verify_caution_edge_lines_correct_inner(a_x2, a_y2, a_x1, a_y1,
+        b_x2, b_y2, b_x1, b_y1, square_width, sandbox_width, sandbox_height);
+
+    success &= verify_caution_edge_lines_correct_inner(b_x1, b_y1, b_x2, b_y2,
+        a_x1, a_y1, a_x2, a_y2, square_width, sandbox_width, sandbox_height);
+    success &= verify_caution_edge_lines_correct_inner(b_x2, b_y2, b_x1, b_y1,
+        a_x1, a_y1, a_x2, a_y2, square_width, sandbox_width, sandbox_height);
+    success &= verify_caution_edge_lines_correct_inner(b_x1, b_y1, b_x2, b_y2,
+        a_x2, a_y2, a_x1, a_y1, square_width, sandbox_width, sandbox_height);
+    success &= verify_caution_edge_lines_correct_inner(b_x2, b_y2, b_x1, b_y1,
+        a_x2, a_y2, a_x1, a_y1, square_width, sandbox_width, sandbox_height);
+    return success;
+}
+
+TEST(AutoTests, CautionEdgeTest)
+{
+    int width = 1024, height = 1024;
+    srand(0);
+    for (int i = 0; i < 1000; i++)
+    {
+        for (int square_width = 1; square_width <= 64; square_width *= 2)
+        {
+            int32_t a_x1 = rand() % width;
+            int32_t a_y1 = rand() % height;
+            int32_t a_x2 = rand() % width;
+            int32_t a_y2 = rand() % height;
+            int32_t b_x1 = rand() % width;
+            int32_t b_y1 = rand() % height;
+            int32_t b_x2 = rand() % width;
+            int32_t b_y2 = rand() % height;
+            verify_caution_edge_lines_correct(a_x1, a_y1, a_x2, a_y2, b_x1, b_y1, b_x2, b_y2, square_width,
+            width, height);
+        }
+    }
 }
 
 typedef struct
