@@ -96,18 +96,165 @@ TEST(AutoTests, CautionEdgeTest)
 {
     int width = 1024, height = 1024;
     srand(0);
+    int32_t a_x1, a_y1, a_x2, a_y2, b_x1, b_y1, b_x2, b_y2;
+    int square_width;
+
+    square_width = 4;
+    a_x1 = 0;
+    a_y1 = 0;
+    a_x2 = 16;
+    a_y2 = 0;
+    b_x1 = 0;
+    b_y1 = 0;
+    b_x2 = 16;
+    b_y2 = 0;
+    verify_caution_edge_lines_correct(a_x1, a_y1, a_x2, a_y2, b_x1, b_y1, b_x2, b_y2, square_width,
+            width, height);
+
+    square_width = 4;
+    a_x1 = 0;
+    a_y1 = 0;
+    a_x2 = 16;
+    a_y2 = 0;
+    b_x1 = 0;
+    b_y1 = 1;
+    b_x2 = 16;
+    b_y2 = 1;
+    verify_caution_edge_lines_correct(a_x1, a_y1, a_x2, a_y2, b_x1, b_y1, b_x2, b_y2, square_width,
+            width, height);
+
+    square_width = 4;
+    a_x1 = 0;
+    a_y1 = 0;
+    a_x2 = 16;
+    a_y2 = 0;
+    b_x1 = 0;
+    b_y1 = 2;
+    b_x2 = 16;
+    b_y2 = 2;
+    verify_caution_edge_lines_correct(a_x1, a_y1, a_x2, a_y2, b_x1, b_y1, b_x2, b_y2, square_width,
+            width, height);
+
+    square_width = 4;
+    a_x1 = 0;
+    a_y1 = 0;
+    a_x2 = 16;
+    a_y2 = 0;
+    b_x1 = 0;
+    b_y1 = 3;
+    b_x2 = 16;
+    b_y2 = 3;
+    verify_caution_edge_lines_correct(a_x1, a_y1, a_x2, a_y2, b_x1, b_y1, b_x2, b_y2, square_width,
+            width, height);
+
+    square_width = 4;
+    a_x1 = 0;
+    a_y1 = 0;
+    a_x2 = 16;
+    a_y2 = 0;
+    b_x1 = 16;
+    b_y1 = 0;
+    b_x2 = 32;
+    b_y2 = 0;
+    verify_caution_edge_lines_correct(a_x1, a_y1, a_x2, a_y2, b_x1, b_y1, b_x2, b_y2, square_width,
+            width, height);
+    square_width = 4;
+    a_x1 = 0;
+    a_y1 = 0;
+    a_x2 = 16;
+    a_y2 = 0;
+    b_x1 = 17;
+    b_y1 = 0;
+    b_x2 = 32;
+    b_y2 = 0;
+    verify_caution_edge_lines_correct(a_x1, a_y1, a_x2, a_y2, b_x1, b_y1, b_x2, b_y2, square_width,
+            width, height);
+
+
+    square_width = 4;
+    a_x1 = 0;
+    a_y1 = 0;
+    a_x2 = 0;
+    a_y2 = 16;
+    b_x1 = 0;
+    b_y1 = 0;
+    b_x2 = 0;
+    b_y2 = 16;
+    verify_caution_edge_lines_correct(a_x1, a_y1, a_x2, a_y2, b_x1, b_y1, b_x2, b_y2, square_width,
+            width, height);
+
+    square_width = 4;
+    a_x1 = 1;
+    a_y1 = 0;
+    a_x2 = 1;
+    a_y2 = 16;
+    b_x1 = 1;
+    b_y1 = 0;
+    b_x2 = 1;
+    b_y2 = 16;
+    verify_caution_edge_lines_correct(a_x1, a_y1, a_x2, a_y2, b_x1, b_y1, b_x2, b_y2, square_width,
+            width, height);
+
+    square_width = 4;
+    a_x1 = 2;
+    a_y1 = 0;
+    a_x2 = 2;
+    a_y2 = 16;
+    b_x1 = 2;
+    b_y1 = 0;
+    b_x2 = 2;
+    b_y2 = 16;
+    verify_caution_edge_lines_correct(a_x1, a_y1, a_x2, a_y2, b_x1, b_y1, b_x2, b_y2, square_width,
+            width, height);
+
+    square_width = 4;
+    a_x1 = 3;
+    a_y1 = 0;
+    a_x2 = 3;
+    a_y2 = 16;
+    b_x1 = 3;
+    b_y1 = 0;
+    b_x2 = 3;
+    b_y2 = 16;
+    verify_caution_edge_lines_correct(a_x1, a_y1, a_x2, a_y2, b_x1, b_y1, b_x2, b_y2, square_width,
+            width, height);
+
+    square_width = 4;
+    a_x1 = 0;
+    a_y1 = 0;
+    a_x2 = 0;
+    a_y2 = 16;
+    b_x1 = 0;
+    b_y1 = 16;
+    b_x2 = 0;
+    b_y2 = 32;
+    verify_caution_edge_lines_correct(a_x1, a_y1, a_x2, a_y2, b_x1, b_y1, b_x2, b_y2, square_width,
+            width, height);
+
+    square_width = 4;
+    a_x1 = 0;
+    a_y1 = 0;
+    a_x2 = 0;
+    a_y2 = 16;
+    b_x1 = 0;
+    b_y1 = 17;
+    b_x2 = 0;
+    b_y2 = 32;
+    verify_caution_edge_lines_correct(a_x1, a_y1, a_x2, a_y2, b_x1, b_y1, b_x2, b_y2, square_width,
+            width, height);
+
     for (int i = 0; i < 1000; i++)
     {
-        for (int square_width = 1; square_width <= 64; square_width *= 2)
+        for (square_width = 1; square_width <= 64; square_width *= 2)
         {
-            int32_t a_x1 = rand() % width;
-            int32_t a_y1 = rand() % height;
-            int32_t a_x2 = rand() % width;
-            int32_t a_y2 = rand() % height;
-            int32_t b_x1 = rand() % width;
-            int32_t b_y1 = rand() % height;
-            int32_t b_x2 = rand() % width;
-            int32_t b_y2 = rand() % height;
+            a_x1 = rand() % width;
+            a_y1 = rand() % height;
+            a_x2 = rand() % width;
+            a_y2 = rand() % height;
+            b_x1 = rand() % width;
+            b_y1 = rand() % height;
+            b_x2 = rand() % width;
+            b_y2 = rand() % height;
             verify_caution_edge_lines_correct(a_x1, a_y1, a_x2, a_y2, b_x1, b_y1, b_x2, b_y2, square_width,
             width, height);
         }
@@ -521,6 +668,97 @@ TEST(ManualTests, CautionEdgeTest)
     square_width = 2;
     success = verify_caution_edge_manual(a_x1, a_y1, a_x2, a_y2, b_x1, b_y1, b_x2, b_y2, square_width,
         std::vector<bool>{true, true, true, true, true, false, true, false});
+    EXPECT_TRUE(success);
+
+    a_x1 = 0;
+    a_y1 = 0;
+    a_x2 = 15;
+    a_y2 = 15;
+    b_x1 = 6;
+    b_y1 = 0;
+    b_x2 = 6;
+    b_y2 = 10;
+    square_width = 4;
+    success = verify_caution_edge_manual(a_x1, a_y1, a_x2, a_y2, b_x1, b_y1, b_x2, b_y2, square_width,
+        std::vector<bool>{true, false, true});
+    EXPECT_TRUE(success);
+
+    a_x1 = 0;
+    a_y1 = 0;
+    a_x2 = 15;
+    a_y2 = 15;
+    b_x1 = 4;
+    b_y1 = 0;
+    b_x2 = 4;
+    b_y2 = 10;
+    square_width = 4;
+    success = verify_caution_edge_manual(a_x1, a_y1, a_x2, a_y2, b_x1, b_y1, b_x2, b_y2, square_width,
+        std::vector<bool>{true, false, true});
+    EXPECT_TRUE(success);
+
+    a_x1 = 0;
+    a_y1 = 0;
+    a_x2 = 15;
+    a_y2 = 15;
+    b_x1 = 4;
+    b_y1 = 10;
+    b_x2 = 4;
+    b_y2 = 0;
+    square_width = 4;
+    success = verify_caution_edge_manual(a_x1, a_y1, a_x2, a_y2, b_x1, b_y1, b_x2, b_y2, square_width,
+        std::vector<bool>{true, false, true});
+    EXPECT_TRUE(success);
+
+    a_x1 = 0;
+    a_y1 = 0;
+    a_x2 = 15;
+    a_y2 = 15;
+    b_x1 = 0;
+    b_y1 = 10;
+    b_x2 = 16;
+    b_y2 = 10;
+    square_width = 4;
+    success = verify_caution_edge_manual(a_x1, a_y1, a_x2, a_y2, b_x1, b_y1, b_x2, b_y2, square_width,
+        std::vector<bool>{true, true, false, true});
+    EXPECT_TRUE(success);
+
+    a_x1 = 0;
+    a_y1 = 0;
+    a_x2 = 15;
+    a_y2 = 15;
+    b_x1 = 16;
+    b_y1 = 10;
+    b_x2 = 0;
+    b_y2 = 10;
+    square_width = 4;
+    success = verify_caution_edge_manual(a_x1, a_y1, a_x2, a_y2, b_x1, b_y1, b_x2, b_y2, square_width,
+        std::vector<bool>{true, true, false, true});
+    EXPECT_TRUE(success);
+
+    a_x1 = 0;
+    a_y1 = 0;
+    a_x2 = 15;
+    a_y2 = 15;
+    b_x1 = 0;
+    b_y1 = 8;
+    b_x2 = 16;
+    b_y2 = 8;
+    square_width = 4;
+    success = verify_caution_edge_manual(a_x1, a_y1, a_x2, a_y2, b_x1, b_y1, b_x2, b_y2, square_width,
+        std::vector<bool>{true, true, false, true});
+    EXPECT_TRUE(success);
+
+    a_x1 = 0;
+    a_y1 = 0;
+    a_x2 = 15;
+    a_y2 = 15;
+    b_x1 = 16;
+    b_y1 = 8;
+    b_x2 = 0;
+    b_y2 = 8;
+    square_width = 4;
+    success = verify_caution_edge_manual(a_x1, a_y1, a_x2, a_y2, b_x1, b_y1, b_x2, b_y2, square_width,
+        std::vector<bool>{true, true, false, true});
     EXPECT_TRUE(success);
 
 }

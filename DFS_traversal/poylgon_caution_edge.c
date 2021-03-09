@@ -31,20 +31,13 @@ PolygonEdgeTraverserCautionEdge PolygonEdgeTraverserCautionEdge_init(
     int64_t box_near_point_y = ((normal_y_sign >= 0) ? ((int64_t)square_y) : ((int64_t)square_y + (int64_t)square_width)) - y1;
     int64_t box_far_point_x = ((normal_x_sign >= 0) ? ((int64_t)square_x + (int64_t)square_width) : ((int64_t)square_x)) - x1;
     int64_t box_far_point_y = ((normal_y_sign >= 0) ? ((int64_t)square_y + (int64_t)square_width) : ((int64_t)square_y)) - y1;
-
+    
     if (dy == 0)
     {
         if (dx >= 0)
             box_far_point_y++;
         else
             box_near_point_y--;
-    }
-    if (dx == 0)
-    {
-        if (dy >= 0)
-            box_near_point_x++;
-        else
-            box_far_point_y--;
     }
 
     caution_edge.near_value = dx * box_near_point_y - dy * box_near_point_x;
@@ -57,6 +50,14 @@ PolygonEdgeTraverserCautionEdge PolygonEdgeTraverserCautionEdge_init(
     caution_edge.max_x = max(ep1x, ep2x);
     caution_edge.min_y = min(ep1y, ep2y);
     caution_edge.max_y = max(ep1y, ep2y);
+
+    if (dx == 0 || dy == 0)
+    {
+        caution_edge.near_value = 1;
+        caution_edge.far_value = -1;
+        caution_edge.dx_value = 0;
+        caution_edge.dy_value = 0;
+    }
     return caution_edge;
 }
 
