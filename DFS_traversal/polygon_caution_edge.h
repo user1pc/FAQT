@@ -12,7 +12,8 @@
 
 typedef struct 
 {
-    int64_t value;
+    int64_t near_value;
+    int64_t far_value;
     int64_t dx_value;
     int64_t dy_value;
     int32_t min_x, max_x, min_y, max_y;

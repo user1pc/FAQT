@@ -75,7 +75,7 @@ void verify_caution_edge_manual_callback(int32_t x, int32_t y, void *user_data)
 bool verify_caution_edge_manual(int32_t a_x1, int32_t a_y1, int32_t a_x2, int32_t a_y2,
     int32_t b_x1, int32_t b_y1, int32_t b_x2, int32_t b_y2,
     int32_t square_width,
-    std::vector<bool> known_correct)
+    const std::vector<bool> &known_correct)
 {
     int32_t dx = a_x2 - a_x1;
     int32_t dy = a_y2 - a_y1;
@@ -86,6 +86,15 @@ bool verify_caution_edge_manual(int32_t a_x1, int32_t a_y1, int32_t a_x2, int32_
     info.caution_edge = PolygonEdgeTraverserCautionEdge_init(b_x1, b_y1, b_x2, b_y2, ep1x, ep1y,
         square_width, (dx >= 0) ? 1 : -1, (dy >= 0) ? 1 : -1);
     info.success = true;
+    info.known_correct = known_correct;
+    LineTraverser_traverse_include_endpoints(a_x1, a_y1, a_x2, a_y2, square_width,
+        verify_caution_edge_manual_callback, &info);
+
+    // The same operation with b points swapped must give the same result,
+    // so lets see if thats true.
+    info.i = 0;
+    info.caution_edge = PolygonEdgeTraverserCautionEdge_init(b_x2, b_y2, b_x1, b_y1, ep1x, ep1y,
+        square_width, (dx >= 0) ? 1 : -1, (dy >= 0) ? 1 : -1);
     info.known_correct = known_correct;
     LineTraverser_traverse_include_endpoints(a_x1, a_y1, a_x2, a_y2, square_width,
         verify_caution_edge_manual_callback, &info);
@@ -108,6 +117,14 @@ bool verify_caution_edge_manual(int32_t a_x1, int32_t a_y1, int32_t a_x2, int32_
     info.success = true;
     for (int i = 0; i < 1000000; i++)
         info.known_correct.push_back(all_known_correct);
+    LineTraverser_traverse_include_endpoints(a_x1, a_y1, a_x2, a_y2, square_width,
+        verify_caution_edge_manual_callback, &info);
+
+    // The same operation with b points swapped must give the same result,
+    // so lets see if thats true.
+    info.i = 0;
+    info.caution_edge = PolygonEdgeTraverserCautionEdge_init(b_x2, b_y2, b_x1, b_y1, ep1x, ep1y,
+        square_width, (dx >= 0) ? 1 : -1, (dy >= 0) ? 1 : -1);
     LineTraverser_traverse_include_endpoints(a_x1, a_y1, a_x2, a_y2, square_width,
         verify_caution_edge_manual_callback, &info);
     return info.success;
@@ -402,6 +419,33 @@ TEST(ManualTests, CautionEdgeTest)
     success = verify_caution_edge_manual(a_x1, a_y1, a_x2, a_y2, b_x1, b_y1, b_x2, b_y2, square_width,
         std::vector<bool>{true, true, true, false});
     EXPECT_TRUE(success);
+
+    a_x1 = 10;
+    a_y1 = 8;
+    a_x2 = 13;
+    a_y2 = 19;
+    b_x1 = 13;
+    b_y1 = 19;
+    b_x2 = 5;
+    b_y2 = 7;
+    square_width = 2;
+    success = verify_caution_edge_manual(a_x1, a_y1, a_x2, a_y2, b_x1, b_y1, b_x2, b_y2, square_width,
+        std::vector<bool>{true, true, true, false, true, false, false});
+    EXPECT_TRUE(success);
+
+    a_x1 = 10;
+    a_y1 = 8;
+    a_x2 = 0;
+    a_y2 = 16;
+    b_x1 = 0;
+    b_y1 = 16;
+    b_x2 = 5;
+    b_y2 = 7;
+    square_width = 2;
+    success = verify_caution_edge_manual(a_x1, a_y1, a_x2, a_y2, b_x1, b_y1, b_x2, b_y2, square_width,
+        std::vector<bool>{true, true, true, true, true, false, true, false});
+    EXPECT_TRUE(success);
+
 }
 
 int main(int argc, char* argv[])

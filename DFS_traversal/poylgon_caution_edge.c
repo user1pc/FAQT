@@ -47,7 +47,8 @@ PolygonEdgeTraverserCautionEdge PolygonEdgeTraverserCautionEdge_init(
             box_far_point_y--;
     }
 
-    caution_edge.value = dx * box_near_point_y - dy * box_near_point_x;
+    caution_edge.near_value = dx * box_near_point_y - dy * box_near_point_x;
+    caution_edge.far_value = dx * box_far_point_y - dy * box_far_point_x;
     caution_edge.dx_value = (x_move_sign >= 0) ? (-dy * square_width) : (dy * square_width);
     caution_edge.dy_value = (y_move_sign >= 0) ? (dx * square_width) : (-dx * square_width);
     int32_t ep1x, ep1y, ep2x, ep2y;
@@ -63,15 +64,17 @@ bool PolygonEdgeTraverserCautionEdge_get(const PolygonEdgeTraverserCautionEdge *
 {
     if ((x < p_caution->min_x || x > p_caution->max_x) || (y < p_caution->min_y || y > p_caution->max_y))
         return true;
-    return p_caution->value <= 0;
+    return p_caution->near_value <= 0 || p_caution->far_value >= 0;
 }
 
 void PolygonEdgeTraverserCautionEdge_move_x(PolygonEdgeTraverserCautionEdge *p_caution)
 {
-    p_caution->value += p_caution->dx_value;
+    p_caution->near_value += p_caution->dx_value;
+    p_caution->far_value += p_caution->dx_value;
 }
 
 void PolygonEdgeTraverserCautionEdge_move_y(PolygonEdgeTraverserCautionEdge *p_caution)
 {
-    p_caution->value += p_caution->dy_value;
+    p_caution->near_value += p_caution->dy_value;
+    p_caution->far_value += p_caution->dy_value;
 }
